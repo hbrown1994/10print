@@ -13,6 +13,14 @@ let state_swtich=0
 let count = 0 // count prints
 let count_trig = randomRange(3000, 6000); //threshold to trig new state
 
+
+//Function to ensure values never leave screen bounds
+function screen_clip (val, sw) {
+  if (val < 0) {return 0}
+  else if (val > sw) {return sw}
+  else {return val}
+}
+
 //Micro Character Weights
 const w1=randomRange(1, 50)
 const w2=randomRange(1, 50)
@@ -33,11 +41,11 @@ let mw3=randomRange(10, 50)
 let mw4=randomRange(10, 50)
 
 // Time weights
-let tw_fast=90
-let tw_med=50
+let tw_fast=80
+let tw_med=60
 let tw_slow=40
 let tw_slower=30
-let tw_steady = 0
+let tw_steady = 20
 
 //Collection of times and their weights
 let TIME_WEIGHTS = {
@@ -45,17 +53,17 @@ let TIME_WEIGHTS = {
   [  //["char",      weight]
       [1,  tw_fast],
       [10,  tw_med],
-      [50,  tw_slow],
-      [80,  tw_slower],
-      [200,  tw_steady]
+      [150,  tw_slow],
+      [300,  tw_slower],
+      [500,  tw_steady]
   ],
   'high':
   [  //["char",      weight]
-      [81,  tw_fast],
-      [200,  tw_med],
-      [400,  tw_slow],
-      [700,  tw_slower],
-      [201,  tw_steady]
+      [10,  tw_fast],
+      [100,  tw_med],
+      [300,  tw_slow],
+      [1001,  tw_slower],
+      [500,  tw_steady]
   ]
   };
 
@@ -96,13 +104,6 @@ let CHARS = {
    ['╭', w8],['╮', w9],['H', w10]]
   };
 
-//Function to ensure values never leave screen bounds
-function screen_clip (val) {
-  if (val < 0) {return 0}
-  else if (val > sw) {return sw}
-  else {return val}
-}
-
 //Takes collections and returns the set
 //based on its weight.
 function weightedSet(set) {
@@ -131,11 +132,11 @@ function draw () {
     weightedSet(TIME_WEIGHTS['high']))
   )
   //Reset count_trig and pos when w > sw/2
-  if (w > sw/2) {count_trig = randomRange(3000, 6000); w=randomRange(0, sw-10)}
+  if (w > sw - 1) {count_trig = randomRange(3000, 6000); w=randomRange(0, sw-10)}
   if (randomRange(0, 1) === 0) {w = w + 1} else{w = w - 1}
 
    //clip pos
-   w = screen_clip(w)
+   w = screen_clip(w, sw)
 
   let output= '' //clear output to avoid doubling string length
   for (let i = 0; i < w ; i++) {
