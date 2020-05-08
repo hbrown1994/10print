@@ -1,6 +1,6 @@
-//Random Range of Vales
+//Random Range of Values
 function randomRange(min, max) {
-  return Math.floor(Math.random() * Math.floor(max-(min-1))) + Math.floor(min);
+    return Math.floor(Math.random() * (max - min) + min)
 }
 
 //Declare Globals
@@ -12,7 +12,6 @@ let getChar = ''
 let state_swtich=0
 let count = 0 // count prints
 let count_trig = randomRange(3000, 6000); //threshold to trig new state
-
 
 //Function to ensure values never leave screen bounds
 function screen_clip (val, sw) {
@@ -47,62 +46,35 @@ let tw_slow=40
 let tw_slower=30
 let tw_steady = 20
 
-//Collection of times and their weights
-let TIME_WEIGHTS = {
-  'low':
-  [  //["char",      weight]
-      [1,  tw_fast],
-      [10,  tw_med],
-      [150,  tw_slow],
-      [300,  tw_slower],
-      [500,  tw_steady]
-  ],
-  'high':
-  [  //["char",      weight]
-      [10,  tw_fast],
-      [100,  tw_med],
-      [300,  tw_slow],
-      [1001,  tw_slower],
-      [500,  tw_steady]
+//Arrays of times and their weights
+let time_weights_low = [[1,  tw_fast],[10,  tw_med],[150,  tw_slow],
+  [300,  tw_slower],[500,  tw_steady]]
+
+let time_weights_high = [[10,  tw_fast],[100,  tw_med],[300,  tw_slow],
+  [1001,  tw_slower],[500,  tw_steady]]
+
+let char_col_weights = [[0,  mw0],[1,  mw1],[2,  mw2],[3,  mw3],[4,  mw1]]
+
+  let chars = [
+    [[' ', w1],['  ', w2],['   ', w3],['    ', w4],['     ', w5],['      ', w6],
+    ['       ', w7],['        ', w8],['         ', w9],['          ', w10],
+    ['                          ', 30]],
+
+    [['▖', w1],['▗', w2],['▘', w3],['▙', w4],['▚', w5],['▛', w6],
+     ['▜', w7],['▝', w8],['▞', w9],['▟', w10]],
+
+
+    [['─', w1],['│', w2],['┄', w3],['┆', w4],['┌', w5],['┐', w6],['└', w7],
+     ['┘', w8],['├', w9],['┤', w10]],
+
+
+    [['═', w1],['║', w2],['╒ ', w3],['╓',  w4],['╔', w5],['╕', w6],['╖', w7],
+     ['╜', w8],['╧', w9],['╪' , w10]],
+
+
+    [['░', w1],['▒', w2],['▓', w3],['█', w4],['╱', w5],['╲ ', w6],['╳', w7],
+     ['╭', w8],['╮', w9],['H', w10]]
   ]
-  };
-
-//Collection of chars colletions
-let CHAR_COL_WEIGHTS = {
-  '0':
-  [  //["char",      weight]
-      ['0',  mw0],
-      ['1',  mw1],
-      ['2',  mw2],
-      ['3',  mw3],
-      ['4',  mw1]
-  ]
-  };
-
-//Collection of chars with weights
-let CHARS = {
-  '0':
-  [[' ', w1], ['  ', w2],['   ', w3],['    ', w4],['     ', w5],
-   ['      ', w6],['       ', w7],['        ', w8],['         ', w9],
-   ['          ', w10],
-  ['                          ', 30]],
-
-  '1':
-  [['▖', w1],['▗', w2],['▘', w3],['▙', w4],['▚', w5],['▛', w6],
-   ['▜', w7],['▝', w8],['▞', w9],['▟', w10]],
-
-  '2':
-  [['─', w1],['│', w2],['┄', w3],['┆', w4],['┌', w5],['┐', w6],['└', w7],
-   ['┘', w8],['├', w9],['┤', w10]],
-
-  '3':
-  [['═', w1],['║', w2],['╒ ', w3],['╓',  w4],['╔', w5],['╕', w6],['╖', w7],
-   ['╜', w8],['╧', w9],['╪' , w10]],
-
-  '4':
-  [['░', w1],['▒', w2],['▓', w3],['█', w4],['╱', w5],['╲ ', w6],['╳', w7],
-   ['╭', w8],['╮', w9],['H', w10]]
-  };
 
 //Takes collections and returns the set
 //based on its weight.
@@ -128,8 +100,7 @@ function draw () {
   //delay
   setTimeout(
     draw,
-    randomRange(weightedSet(TIME_WEIGHTS['low']),
-    weightedSet(TIME_WEIGHTS['high']))
+    randomRange(weightedSet(time_weights_low), weightedSet(time_weights_high))
   )
   //Reset count_trig and pos when w > sw/2
   if (w > sw - 1) {count_trig = randomRange(3000, 6000); w=randomRange(0, sw-10)}
@@ -140,7 +111,7 @@ function draw () {
 
   let output= '' //clear output to avoid doubling string length
   for (let i = 0; i < w ; i++) {
-  output += weightedSet(CHARS[weightedSet(CHAR_COL_WEIGHTS['0'])])
+  output += weightedSet(chars[weightedSet(char_col_weights)])
   if (count < count_trig) {count = count + 1} else{count=0}
   console.log(output) // log after for-loop
 }
